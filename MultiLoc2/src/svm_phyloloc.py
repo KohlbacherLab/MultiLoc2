@@ -3,8 +3,8 @@ import re,sys,os,string,math,time,util
 svm_path=""
 tmpfile_path=""
 genome_path=""
-blast_path="" 
-formatdb_path="" 
+blast_path=""
+formatdb_path=""
 
 protein_self_bit_score_map = {}
 
@@ -77,8 +77,9 @@ def createProfile(fastafile, blast_path, genome_path, sessionid=1):
 			db_path = genome_path+"/genomes/Eukaryota/" + genomeList[i]
 		blastoutput_path = blast_out_path + '/' + genomeList[i] + '.txt'
 		if os.path.exists(db_path + ".pin") == False:
-			os.system(formatdb_path + "/formatdb" + " -i " + db_path)
-		cmd = "nice -n 19 " +blast_path + "/blastall -p blastp  -d " + db_path +  " -i " + query_path + "   -m9  -o " + blastoutput_path
+			cmd = "nice -n 19 "+blast_path+"/makeblastdb -in " + db_path + " -dbtype prot"
+			os.system(cmd)
+		cmd = "nice -n 19 " +blast_path + "/blastp  -db " + db_path +  " -query " + query_path + " -outfmt 7 -out " + blastoutput_path
 		os.system(cmd)
 
 	for id in protein_self_bit_score_map.keys():
@@ -87,13 +88,51 @@ def createProfile(fastafile, blast_path, genome_path, sessionid=1):
 		for i in range(len(genomeList)):
 			proteins[id].append(0.0)
 			proteins2[id].append(0.0)
-   
+
 	for i in range(len(genomeList)):
 		if i>24 and i <400:
 			continue
 		blastFile = file(blast_out_path + '/' + genomeList[i] + '.txt' ,'r')
 		blastLines = blastFile.readlines()
+
+		id = blastLines[1].split(" ")[2].strip()
+
+		phylovalue = {}
+		phylovalue[0.1] = 0.0
+		phylovalue[0.01] = 0.0
+		phylovalue[0.001] = 0.0
+		phylovalue[0.0001] = 0.0
+		phylovalue[0.00001] = 0.0
+		phylovalue[0.000001] = 0.0
+		phylovalue[0.0000001] = 0.0
+		phylovalue[0.00000001] = 0.0
+		phylovalue[0.000000001] = 0.0
+		phylovalue[0.0000000001] = 0.0
+
+		bit_score = 0.0
+
+		if len(blastLines) >= 6:
+			hit_line = blastLines[5]
+			evalue = hit_line[10]
+
+			if id in protein_self_bit_score_map:
+				bit_score = float(hit_line[11]) / protein_self_bit_score_map[id]
+			if evalue != "0.0":
+				for cutoff in phylovalue.keys():
+					if float(evalue) >= cutoff:
+						phylovalue[cutoff] = 1.0
+					else:
+						phylovalue[cutoff] = -1.0 /(math.log10(float(evalue)))
+		else:
+			evalue = 1
+			for cutoff in phylovalue.keys():
+				phylovalue[cutoff] = 1.0
+
+		proteins2[id][i]=bit_score
+
+		'''
 		for k in range(len(blastLines)):
+			blastLines[k]
 			if blastLines[k].find("# Query") != -1:
 				id = blastLines[k][9:]
 				id = re.sub("\n","",id)
@@ -110,8 +149,8 @@ def createProfile(fastafile, blast_path, genome_path, sessionid=1):
 				phylovalue[0.00000001] = 0.0
 				phylovalue[0.000000001] = 0.0
 				phylovalue[0.0000000001] = 0.0
-   
-				# berpruefung, ob es ueberhaupt ein blast-ergebnis gibt   
+
+				# berpruefung, ob es ueberhaupt ein blast-ergebnis gibt
 				bit_score = 0.0
 				if (k+4 <= len(blastLines)) and (blastLines[k+3].find("BLASTP") == -1):
 					evalLine = blastLines[k+3].split("\t")
@@ -125,13 +164,16 @@ def createProfile(fastafile, blast_path, genome_path, sessionid=1):
 							else:
 								phylovalue[cutoff] = -1.0 /(math.log10(float(evalue)))
 
+
 				#gibt es kein blast-ergebnis wird der evalue und phylovalue auf 1 gesetzt
 				else:
 					evalue = 1
 					for cutoff in phylovalue.keys():
 						phylovalue[cutoff] = 1.0
-			 
+
 				proteins2[id][i]=bit_score
+		'''
+		
 		blastFile.close()
 
 
@@ -164,9 +206,9 @@ def create_feature_vector(protein_id,sequence,blast_path,genome_path,id=1):
 	file = open("%stest.seq" %(file_path),"w")
 	file.write(">"+protein_id+"\n"+sequence+"\n")
 	file.close()
-	cmd = "nice -n 19 "+formatdb_path+"/formatdb -i %stest.seq" %(file_path)
+	cmd = "nice -n 19 "+blast_path+"/makeblastdb -in %stest.seq -dbtype prot" %(file_path)
 	os.system(cmd)
-	cmd = "nice -n 19 "+blast_path+"/blastall -p blastp  -d %stest.seq -i %stest.seq -m9 -o %stest_blast.txt" %(file_path,file_path,file_path)
+	cmd = "nice -n 19 "+blast_path+"/blastp  -db %stest.seq -query %stest.seq -outfmt 7 -out %stest_blast.txt" %(file_path,file_path,file_path)
 	os.system(cmd)
 	fastafile = open("%stest.seq" %(file_path), 'r')
 	inputfile = os.tmpfile()
@@ -180,7 +222,7 @@ def create_feature_vector(protein_id,sequence,blast_path,genome_path,id=1):
 		fv=fvs[0]
 	fastafile.close()
 	inputfile.close()
-	
+
 	if os.path.exists("%stest.seq" % file_path):
 		os.remove("%stest.seq" % file_path)
 	if os.path.exists("%stest.seq.phr" % file_path):
@@ -197,7 +239,7 @@ def create_feature_vector(protein_id,sequence,blast_path,genome_path,id=1):
 
 def predict(origin,table,path,data,model,libsvm_path,blast_path,genome_path, id=1):
     model=str(model)
-  
+
     proteins = util.parse_fasta_file(data)
 
     file_path = tmpfile_path+"/"+str(id)
@@ -211,9 +253,9 @@ def predict(origin,table,path,data,model,libsvm_path,blast_path,genome_path, id=
         else:
             no_fv_proteins.append(proteins[i]['id'])
     input_file.close()
-    
+
     return util.predict_one_vs_one(table,origin,model,path,libsvm_path,tmpfile_path,id,proteins,no_fv_proteins)
- 
+
 def animal_predict(table,path,data,model,libsvm_path,blast_path,genome_path, id=1):
 	return predict("animal",table,path,data,model,libsvm_path,blast_path,genome_path, id)
 

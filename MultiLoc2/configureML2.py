@@ -29,7 +29,7 @@ def run_shell_command(cmd):
 
 def set_path_in_src_files(type,path,src_path):
 	cmd= "sed -i 's/%s\s*=\s*\"[^\"]*\"/%s=\"" %(type,type)
-	cmd = cmd + re.sub("/","\\/",path) + "\"/g' " + src_path + "*.py"
+	cmd = cmd + re.sub("/","\\/", path) + "\"/g' " + src_path + "*.py"
 	run_shell_command(cmd)
 
 #main program
@@ -47,7 +47,7 @@ blast_path = search_program("blastall",0)
 formatdb_path = search_program("formatdb",0)
 inter_pro_scan_path = search_program("iprscan",1)
 
-print "\nset all static paths in source files ..."
+print "\n... set all static paths in source files ..."
 #all is fine here
 set_path_in_src_files("src_path",src_path,src_path)
 set_path_in_src_files("tmpfile_path",tmp_file_path,src_path)
@@ -58,12 +58,20 @@ set_path_in_src_files("blast_path",blast_path,src_path)
 set_path_in_src_files("formatdb_path",formatdb_path,src_path)
 set_path_in_src_files("inter_pro_scan_path",inter_pro_scan_path,src_path)
 
-print "... create script run_multiloc2_with_iprscan"
-file = open("run_multiloc2_with_iprscan","w")
-file.write("%siprscan -cli -i $1 -o interpro.out -format raw -goterms -iprlookup\n" %(inter_pro_scan_path))
+'''
+print "\n... create run scripts ..."
+
+file = open("run_multiloc2_no_interproscan","w")
+file.write("python %smultiloc2_prediction.py -fasta=$1 -origin=$2 -result=$3" %(src_path))
+file.close()
+os.system("chmod 755 run_multiloc2_no_iprscan")
+
+file = open("run_multiloc2_with_interproscan","w")
+file.write("$INTERPROSCAN/interproscan.sh -cli -i $1 -o interpro.out -format raw -goterms -iprlookup\n")
 file.write("python %smultiloc2_prediction.py -fasta=$1 -origin=$2 -result=$3 -go=interpro.out" %(src_path))
 file.close()
 os.system("chmod 755 run_multiloc2_with_iprscan")
+'''
 
 print "... completed"
 print "MultiLoc2 is ready to use!"

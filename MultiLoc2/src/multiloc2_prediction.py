@@ -15,7 +15,7 @@ email = ""
 
 def create_prediction_id():
 	return "ml" + str(time.time())
-	
+
 def mail(serverURL=None, sender='', to='', subject='', text=''):
 	"""
 	Usage:
@@ -37,7 +37,7 @@ def check_load():
 	wait = 60.0
 	max_load_avg = 4.0
 	time_abort = 60.0 * 60.0 * 24.0 * 3.0
-	cmd_pat = "hmmpfam|iprscan|svm-predict|blastall"
+	cmd_pat = "hmmpfam|iprscan|svm-predict|blastp"
 	start = time.time()
 	end = time.time()
 	load_avg = 0.0
@@ -82,13 +82,13 @@ def multiloc2_create_feature_vector(predictor,origin, fastafile, go_file_names, 
 		fastafile.seek(0)
 		svm_model_path=svm_data_path+"/bacello_all_animal_svm_target/"
 		if predictor == "MultiLoc2.11":
-			svm_model_path=svm_data_path+"/benchmark80_svm_target/" 
+			svm_model_path=svm_data_path+"/benchmark80_svm_target/"
 		print "run SVMTarget"
-		result_svmtarget=svm_target.noplant_predict(fastafile,model,svm_model_path,libsvm_path, prediction_id)		
+		result_svmtarget=svm_target.noplant_predict(fastafile,model,svm_model_path,libsvm_path, prediction_id)
 		if predictor == "MultiLoc2.11":
 			fastafile.seek(0)
 			print "run SVMSA"
-			result_svm_sa = svm_sa.noplant_predict(fastafile,svm_data_path,libsvm_path,12345, prediction_id)			
+			result_svm_sa = svm_sa.noplant_predict(fastafile,svm_data_path,libsvm_path,12345, prediction_id)
 		fastafile.seek(0)
 		aac_type="aac"
 		table="BACELLOA"
@@ -115,7 +115,7 @@ def multiloc2_create_feature_vector(predictor,origin, fastafile, go_file_names, 
 		result_svm_phyloloc = svm_phyloloc.animal_predict(table,svm_model_path,fastafile,model,libsvm_path,blast_path,genome_path,prediction_id)
 		fastafile.seek(0)
 		print "run MotifSearch"
-		result_motif_search=motif_search.search(fastafile)		  
+		result_motif_search=motif_search.search(fastafile)
 		for i in range(0,len(result_motif_search)):
 			if predictor == "MultiLoc2.11":
 				feature_vector.append({'id' : result_motif_search[i]['id'],
@@ -157,7 +157,7 @@ def multiloc2_create_feature_vector(predictor,origin, fastafile, go_file_names, 
 										'dna_associated_domain' :  result_motif_search[i]['dna_associated_domain'],
 										'pm_receptor_domain': result_motif_search[i]['pm_receptor_domain'],
 										'dna_associated_domain_desc' :  result_motif_search[i]['dna_associated_domain_desc'],
-										'pm_receptor_domain_desc' : result_motif_search[i]['pm_receptor_domain_desc'],	
+										'pm_receptor_domain_desc' : result_motif_search[i]['pm_receptor_domain_desc'],
 										'predictNLS' : result_motif_search[i]['predictNLS'],
 										'nls_mono' : result_motif_search[i]['nls_mono']})
 			else:
@@ -184,15 +184,15 @@ def multiloc2_create_feature_vector(predictor,origin, fastafile, go_file_names, 
 										'dna_associated_domain' :  result_motif_search[i]['dna_associated_domain'],
 										'pm_receptor_domain': result_motif_search[i]['pm_receptor_domain'],
 										'dna_associated_domain_desc' :  result_motif_search[i]['dna_associated_domain_desc'],
-										'pm_receptor_domain_desc' : result_motif_search[i]['pm_receptor_domain_desc'], 
+										'pm_receptor_domain_desc' : result_motif_search[i]['pm_receptor_domain_desc'],
 										'predictNLS' : result_motif_search[i]['predictNLS'],
-										'nls_mono' : result_motif_search[i]['nls_mono']}) 
+										'nls_mono' : result_motif_search[i]['nls_mono']})
 	elif origin == "fungal":
 		fastafile.seek(0)
 		svm_model_path=svm_data_path+"/bacello_all_fungi_svm_target/"
 		if predictor == "MultiLoc2.11":
 			svm_model_path=svm_data_path+"/benchmark80_svm_target/"
-		print "run SVMTarget" 
+		print "run SVMTarget"
 		result_svmtarget=svm_target.noplant_predict(fastafile,model,svm_model_path,libsvm_path, prediction_id)
 		result_svm_sa = []
 		if predictor == "MultiLoc2.11":
@@ -225,7 +225,7 @@ def multiloc2_create_feature_vector(predictor,origin, fastafile, go_file_names, 
 		result_svm_phyloloc = svm_phyloloc.fungi_predict(table,svm_model_path,fastafile,model,libsvm_path,blast_path,genome_path,prediction_id)
 		fastafile.seek(0)
 		print "run MotifSearch"
-		result_motif_search=motif_search.search(fastafile)   
+		result_motif_search=motif_search.search(fastafile)
 		for i in range(0,len(result_motif_search)):
 			if predictor == "MultiLoc2.11":
 				feature_vector.append({'id' : result_motif_search[i]['id'],
@@ -296,13 +296,13 @@ def multiloc2_create_feature_vector(predictor,origin, fastafile, go_file_names, 
 										'dna_associated_domain_desc' :  result_motif_search[i]['dna_associated_domain_desc'],
 										'pm_receptor_domain_desc' : result_motif_search[i]['pm_receptor_domain_desc'],
 										'predictNLS' : result_motif_search[i]['predictNLS'],
-										'nls_mono' : result_motif_search[i]['nls_mono']}) 
+										'nls_mono' : result_motif_search[i]['nls_mono']})
 	else:
 		fastafile.seek(0)
 		svm_model_path=svm_data_path+"/bacello_all_plant_svm_target/"
 		if predictor == "MultiLoc2.11":
 			svm_model_path=svm_data_path+"/benchmark80_svm_target/"
-		print "run SVMTarget" 
+		print "run SVMTarget"
 		result_svmtarget=svm_target.plant_predict(fastafile,model,svm_model_path,libsvm_path, prediction_id)
 		if predictor == "MultiLoc2.11":
 			fastafile.seek(0)
@@ -334,7 +334,7 @@ def multiloc2_create_feature_vector(predictor,origin, fastafile, go_file_names, 
 		result_svm_phyloloc = svm_phyloloc.plant_predict(table,svm_model_path,fastafile,model,libsvm_path,blast_path,genome_path,prediction_id)
 		fastafile.seek(0)
 		print "run MotifSearch"
-		result_motif_search=motif_search.search(fastafile)   
+		result_motif_search=motif_search.search(fastafile)
 		for i in range(0,len(result_motif_search)):
 			if predictor == "MultiLoc2.11":
 				feature_vector.append({'id' : result_motif_search[i]['id'],
@@ -413,9 +413,9 @@ def multiloc2_create_feature_vector(predictor,origin, fastafile, go_file_names, 
 										'dna_associated_domain' :  result_motif_search[i]['dna_associated_domain'],
 										'pm_receptor_domain': result_motif_search[i]['pm_receptor_domain'],
 										'dna_associated_domain_desc' :  result_motif_search[i]['dna_associated_domain_desc'],
-										'pm_receptor_domain_desc' : result_motif_search[i]['pm_receptor_domain_desc'], 
+										'pm_receptor_domain_desc' : result_motif_search[i]['pm_receptor_domain_desc'],
 										'predictNLS' : result_motif_search[i]['predictNLS'],
-										'nls_mono' : result_motif_search[i]['nls_mono']})  
+										'nls_mono' : result_motif_search[i]['nls_mono']})
 	return feature_vector
 
 def multiloc2_predict_location(predictor,origin, feature_vector, model, prediction_id):
@@ -444,7 +444,7 @@ def multiloc2_predict_location(predictor,origin, feature_vector, model, predicti
 		else:
 			svm_model_path = svm_data_path+"/bacello_all_plant_multiloc_with_new_svmaac_join_phylo_G78BS_join_go/"
 			result = svm_multiloc2_5.plant_predict(feature_vector,svm_model_path,libsvm_path,model, prediction_id)
-	   
+
 	return result
 
 def advanced_output(vec,predictor, origin):
@@ -487,7 +487,7 @@ def advanced_output(vec,predictor, origin):
 		else:
 			line = line + "\tphyloloc_score_vac"
 	line = line + "\tmotif_search_er_target\tmotif_search_pm_receptor_domain\tmotif_search_pm_receptor_domain_desc\tmotif_search_peroxi_target\tmotif_search_nuclear_bipartite\tmotif_search_predictNLS\tmotif_search_nls_mono\tmotif_search_dna_associated_domain\tmotif_search_dna_associated_domain_desc\n"
-	
+
 	for i in range(0,len(vec)):
 		line = line + vec[i]['id']
 		line = line+"\t"+str(vec[i]['score_sp'])+"\t"+str(vec[i]['score_mtp'])
@@ -529,7 +529,7 @@ def advanced_output(vec,predictor, origin):
 		line = line +"\t"+str(vec[i]['er_target'])
 		line=line+"\t"+str(vec[i]['pm_receptor_domain'])+"\t"+str(vec[i]['pm_receptor_domain_desc'])+"\t"+str(vec[i]['peroxi_target'])
 		line=line+"\t"+str(vec[i]['nuclear_bipartite'])+"\t"+str(vec[i]['predictNLS'])+"\t"+str(vec[i]['nls_mono'])
-		line=line+"\t"+str(vec[i]['dna_associated_domain'])+"\t"+str(vec[i]['dna_associated_domain_desc']) 
+		line=line+"\t"+str(vec[i]['dna_associated_domain'])+"\t"+str(vec[i]['dna_associated_domain_desc'])
 		line = line + "\n"
 	return line
 
@@ -544,7 +544,7 @@ def main():
 	rm_fasta = 0
 	result_file_name = ""
 	go_file_names = []
-	
+
 	global multiloc2_mode
 	if len(sys.argv)<3:
 		print "usage:"
@@ -613,7 +613,7 @@ def main():
 		line = "MultiLoc2 Prediction Result\n\n"
 	line = line + "predictor = MultiLoc2-"+predictor_ext+"\n"
 	line = line + "origin = "+origin+"\n\n"
-	
+
 	key_loc_dic={"score_chl":"chloroplast","score_cyt":"cytoplasmic","score_nuc":"nuclear","score_mit":"mitochondrial","score_ext":"secretory pathway"}
 	if predictor == "MultiLoc2.11":
 		key_loc_dic={"score_chl":"chloroplast","score_cyt":"cytoplasmic","score_nuc":"nuclear","score_mit":"mitochondrial","score_ext":"extracellular","score_pm":"plasma membrane","score_per":"peroxisomal","score_gol":"Golgi apparatus","score_er":"ER","score_lys":"lysosomal","score_vac":"vacuolar"}
@@ -631,7 +631,7 @@ def main():
 						max_loc=k2
 			if max_loc != "":
 				sorted.append(max_loc)
-		line=line + res[i]['id'] 
+		line=line + res[i]['id']
 		for j in range(0,len(sorted)):
 			loc = sorted[j]
 			score = round(res[i][loc],2)
