@@ -43,9 +43,9 @@ svm_data_path = multiloc2_path + "/data/svm_models/MultiLoc2/"
 genome_path =  multiloc2_path + "/data/NCBI/"
 
 svm_predict_path = search_program("svm-predict",0)
-blast_path = search_program("blastall",0)
-formatdb_path = search_program("formatdb",0)
-inter_pro_scan_path = search_program("iprscan",1)
+blast_path = search_program("blastp",0)
+formatdb_path = search_program("makeblastdb",0)
+inter_pro_scan_path = search_program("interproscan.sh",1)
 
 print "\n... set all static paths in source files ..."
 #all is fine here
