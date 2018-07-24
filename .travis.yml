@@ -16,4 +16,5 @@ jobs:
   include:
     - stage: build docker image
       script:
+      - cd ..
       - docker build -t multiloc2 MultiLoc2/
