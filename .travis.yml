@@ -5,8 +5,8 @@ os:
 services:
   - docker
 
-before_install:
-  - sudo apt-get install -y git
+#before_install:
+#  - sudo apt-get install -y git
   #- wget ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.30-69.0/interproscan-5.30-69.0-64-bit.tar.gz
   #- tar -xf interproscan-5.30-69.0-64-bit.tar.gz -C /interproscan
 
@@ -16,6 +16,4 @@ jobs:
       script:
       - cd ..
       - docker build -t multiloc2 MultiLoc2/
-    - stage: test MultiLoc2 with InterProScan
-      script:
       - docker run --rm multiloc2 ./run_multiloc2.sh test.fasta animal test.res
