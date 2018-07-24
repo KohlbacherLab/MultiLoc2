@@ -5,13 +5,11 @@ os:
 services:
   - docker
 
-before_install:
-#  - travis_wait 20 wget ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.30-69.0/interproscan-5.30-69.0-64-bit.tar.gz
-  - df -h
-  - wget -q ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.30-69.0/interproscan-5.30-69.0-64-bit.tar.gz
-  - df -h
-  - tar -xf interproscan-5.30-69.0-64-bit.tar.gz
-  - mv interproscan-5.30-69.0 /interproscan
+#before_install:
+#  InterProScan too large for Travis
+#  - wget -q ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.30-69.0/interproscan-5.30-69.0-64-bit.tar.gz
+#  - tar -xf interproscan-5.30-69.0-64-bit.tar.gz
+#  - mv interproscan-5.30-69.0 /interproscan
 
 jobs:
   include:
@@ -19,4 +17,4 @@ jobs:
       script:
       - cd ..
       - docker build -t multiloc2 MultiLoc2/
-      - docker run --rm -v /interproscan:/interproscan -e INTERPROSCAN=/interproscan multiloc2 ./run_multiloc2.sh test.fasta animal test.res
+      - docker run --rm multiloc2 ./run_multiloc2.sh test.fasta animal test.res
