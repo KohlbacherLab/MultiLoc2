@@ -6,7 +6,8 @@ services:
   - docker
 
 before_install:
-  - travis_wait 20 wget ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.30-69.0/interproscan-5.30-69.0-64-bit.tar.gz
+#  - travis_wait 20 wget ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.30-69.0/interproscan-5.30-69.0-64-bit.tar.gz
+  - wget -q ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.30-69.0/interproscan-5.30-69.0-64-bit.tar.gz
   - tar -xf interproscan-5.30-69.0-64-bit.tar.gz
   - mv interproscan-5.30-69.0 /interproscan
 
