@@ -7,7 +7,8 @@ services:
 
 before_install:
   - wget ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.30-69.0/interproscan-5.30-69.0-64-bit.tar.gz
-  - tar -xf interproscan-5.30-69.0-64-bit.tar.gz -C /interproscan
+  - tar -xf interproscan-5.30-69.0-64-bit.tar.gz
+  - mv interproscan-5.30-69.0 /interproscan
 
 jobs:
   include:
