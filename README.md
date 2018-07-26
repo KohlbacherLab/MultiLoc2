@@ -5,6 +5,7 @@ Travis CI
 [![Build Status](https://travis-ci.org/KohlbacherLab/MultiLoc2.svg?branch=master)](https://travis-ci.org/KohlbacherLab/MultiLoc2)  
 
 This repository mainly provides a containerized installation of MultiLoc2 using Docker.  
+Most of the required depdendencies are directly installed in the Docker image.  
 In order to install the software elsewhere please read the instructions in the  
 [README](MultiLoc2/README) file of the YLoc source folder and have a look in the Dockerfile.  
 
