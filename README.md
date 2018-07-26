@@ -22,6 +22,7 @@ BMC Bioinformatics, 10:274
 
 - Linux OS
 - Docker
+- InterProScan (optional)
 
 
 **Installation**
