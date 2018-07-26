@@ -11,7 +11,7 @@ In order to install the software elsewhere please read the instructions in the
 
 **Citing & Further Information**  
 
-If you use YLoc please cite the following publications:
+If you use MultiLoc2 please cite the following publications:
 
 Blum T., Briesemeister S., and Kohlbacher O. (2009)  
 [MultiLoc2: integrating phylogeny and Gene Ontology terms improves subcellular protein localization prediction.](https://doi.org/10.1186/1471-2105-10-274)  
@@ -32,10 +32,10 @@ The easiest option is to build the Docker image from this repository using the f
 
 **MultiLoc2 Usage (Interactively in container)**  
 
-YLoc general usage:  
+MultiLoc2 general usage:  
 ` $ python yloc.py <fasta_file> <model_name> <prediction_id(optional)> <print_result(y/n)(optional)>`  
 
-You can print the usage description and available models by executing  
+MultiLoc2 can print the usage description and available models by executing  
 ` $ python yloc.py`  
 
 **Running MultiLoc2 Using Docker run**  
