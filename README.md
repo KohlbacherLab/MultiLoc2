@@ -13,13 +13,9 @@ In order to install the software elsewhere please read the instructions in the
 
 If you use YLoc please cite the following publications:
 
-Briesemeister S., Rahnenführer J., and Kohlbacher O. (2010)  
-[YLoc—an interpretable web server for predicting subcellular localization.](https://doi.org/10.1093/bioinformatics/btq115)  
-Bioinformatics, 26. 1232-8
-
-Briesemeister S., Rahnenführer J., and Kohlbacher O. (2010)  
-[YLoc—an interpretable web server for predicting subcellular localization.](https://dx.doi.org/10.1093%2Fnar%2Fgkq477)  
-Nucleic Acids Res., 38, W497–W502  
+Blum T., Briesemeister S., and Kohlbacher O. (2009)  
+[MultiLoc2: integrating phylogeny and Gene Ontology terms improves subcellular protein localization prediction.](https://doi.org/10.1186/1471-2105-10-274)  
+BMC Bioinformatics, 10:274
   
   
 **Requirements**  
