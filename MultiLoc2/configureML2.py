@@ -38,7 +38,8 @@ print "Start MultiLoc2 configuration:"
 print
 multiloc2_path = run_shell_command("pwd")
 
-tmp_file_path = multiloc2_path + "/tmp/"
+#tmp_file_path = multiloc2_path + "/tmp/"
+tmp_file_path = "/tmp/"
 if not os.path.isdir(tmp_file_path):
 	os.mkdir(tmp_file_path)
 

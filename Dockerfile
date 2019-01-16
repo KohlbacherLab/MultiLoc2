@@ -7,21 +7,19 @@ FROM ubuntu:14.04
 
 # Update package repository
 RUN apt-get update
-RUN apt-get -y upgrade
+#RUN apt-get -y upgrade
 
 
 # ----------------------------------------------------------
 # Install some useful and required stuff
 # ----------------------------------------------------------
-RUN apt-get install -y dirmngr software-properties-common \
-                       perl python python3 vim wget
+RUN apt-get install -y dirmngr software-properties-common vim wget
 
 
 # ----------------------------------------------------------
 # Install LibSVM and BLAST
 # ----------------------------------------------------------
-RUN apt-get install -y libsvm-tools
-RUN apt-get install -y ncbi-blast+
+RUN apt-get install -y libsvm-tools ncbi-blast+
 
 
 # ----------------------------------------------------------
@@ -41,20 +39,39 @@ ENV CLASSPATH=/usr/lib/jvm/java-8-oracle/bin
 
 
 # ----------------------------------------------------------
+# Setup MultiLoc2 Webservice
+# ----------------------------------------------------------
+RUN apt-get -y install python-biopython apache2
+RUN a2enmod cgid
+ADD webservice/apache2.conf         /etc/apache2/apache2.conf
+ADD webservice/serve-cgi-bin.conf   /etc/apache2/conf-available/serve-cgi-bin.conf
+
+COPY webservice/webloc.cgi  /var/www/html/cgi-bin/
+COPY webservice/downloads/  /var/www/html/cgi-bin/downloads/
+COPY webservice/images/     /var/www/html/cgi-bin/images/
+
+RUN mkdir /webservice
+ADD webservice/multiloc2_entrypoint.sh  /webservice/multiloc2_entrypoint.sh
+
+RUN mkdir /ml2jobs
+RUN chmod 777 /ml2jobs
+
+# ----------------------------------------------------------
 # Install MultiLoc2
 # ----------------------------------------------------------
-
-ADD MultiLoc2 /MultiLoc2
-
+COPY MultiLoc2 /MultiLoc2
 WORKDIR /MultiLoc2
-
 RUN python configureML2.py
 RUN chmod +x run_multiloc2.sh
 
-
-# ----------------------------------------------------------
-# Test MultiLoc2
-# This generates also the reusable BLAST databases!
-# ----------------------------------------------------------
-
+# Generate the reusable BLAST databases!
 RUN ./run_multiloc2.sh test.fasta animal test.res
+
+WORKDIR /
+RUN  chown -R www-data:www-data /MultiLoc2
+RUN  chmod -R 775 /MultiLoc2
+
+
+EXPOSE 80
+
+CMD ["sh", "/webservice/multiloc2_entrypoint.sh"]
