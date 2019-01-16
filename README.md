@@ -39,8 +39,14 @@ MultiLoc2 general usage:
 
 **Use InterProScan**  
 In order to use InterProScan you nee a separate installation.  
-You the have to mount the interproscan installation directory to some place into the docker container.  
+You the have to mount the InterProScan installation directory to some place into the docker container.  
 Inside the container please export the environment variable INTERPROSCAN and set it to the mounted directory.  
+
+Example:
+` docker run --rm -it -v <path_to_host_interproscan>:<container_mount_point> multiloc2 /bin/bash`  
+` root@be2eb1efa8c8:/# export INTERPROSCAN=<container_mount_point>`  
+
+Now run MultiLoc2, which should internally use InterProScan now.
 
 
 
