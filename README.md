@@ -7,7 +7,7 @@ Travis CI
 This repository mainly provides a containerized installation of MultiLoc2 using Docker.  
 Most of the required depdendencies are directly installed in the Docker image.  
 In order to install the software elsewhere please read the instructions in the  
-[README](MultiLoc2/README) file of the YLoc source folder and have a look in the Dockerfile.  
+[README](MultiLoc2/README) file of the MultiLoc2 source folder and have a look in the Dockerfile.  
 
 
 **Citing & Further Information**  
@@ -35,15 +35,15 @@ The easiest option is to build the Docker image from this repository using the f
 **MultiLoc2 Usage (Interactively in container)**  
 
 MultiLoc2 general usage:  
-` $ python yloc.py <fasta_file> <model_name> <prediction_id(optional)> <print_result(y/n)(optional)>`  
+` $ sh /MultiLoc2/run_multiloc2.sh <fasta_file> <origin> <predictor> <result_file> <go_file>`  
 
-MultiLoc2 can print the usage description and available models by executing  
-` $ python yloc.py`  
+**Use InterProScan**  
+In order to use InterProScan you nee a separate installation.  
+You the have to mount the interproscan installation directory to some place into the docker container.  
+Inside the container please export the environment variable INTERPROSCAN and set it to the mounted directory.  
 
-**Running MultiLoc2 Using Docker run**  
 
-You can either start your container interactively and run YLoc  
-` $ docker run --rm -it <your_image_name> /bin/bash`  
-`root@<some_hash>:/YLoc# python yloc.py test.fasta "some_model"`  
+
+
 
 
