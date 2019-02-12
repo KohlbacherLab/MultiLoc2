@@ -11,7 +11,7 @@ else:
 if os.environ.get("ML_IMPRINT_URL") != None:
     f.write("imprint_url = '" + os.environ.get("ML_IMPRINT_URL") + "'\n")
 else:
-    f.write("imprint_url = 'https://abi.inf.uni-tuebingen.de/impressum\n'")
+    f.write("imprint_url = 'https://abi.inf.uni-tuebingen.de/impressum'\n")
 
 if os.environ.get("ML_GDPR_URL") != None:
     f.write("gdpr_url = '" + os.environ.get("ML_GDPR_URL") + "'\n")
