@@ -6,7 +6,7 @@ f = file("/var/www/html/cgi-bin/ml2config.py", "w")
 if os.environ.get("ML_CONTACT_EMAIL") != None:
     f.write("contact_email = '" + os.environ.get("ML_CONTACT_EMAIL") + "'\n")
 else:
-    f.write("contact_email = 'abi-multiloc2@informatik.uni-tuebingen.de'\n")
+    f.write("contact_email = 'abi-services@informatik.uni-tuebingen.de'\n")
 
 if os.environ.get("ML_IMPRINT_URL") != None:
     f.write("imprint_url = '" + os.environ.get("ML_IMPRINT_URL") + "'\n")
