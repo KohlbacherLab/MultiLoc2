@@ -5,32 +5,23 @@ from subprocess import PIPE, Popen
 
 sys.stderr = sys.stdout
 
-# 2018_12_20_MOD sys.path.append('/share/projects/LOC_PRED/WebServices/YLoc');
-sys.path.append('/MultiLoc2');
-
-# Tag YLoc Webservice Instance
-os.environ['MULTILOC2_WS'] = '1';
-
-#os.environ['MULTILOC2_DEBUG'] = '1';
-
-os.environ['MULTILOC2_JOBS'] = '/ml2jobs';
-
-os.environ['MULTILOC2_MAX_SEQS'] = '20';
-
-if os.path.isfile("/interproscan/interproscan.sh"):
-  os.environ['INTERPROSCAN'] = "/interproscan";
-
-
-
-python_path = "/usr/bin/python";
-
-# 2018_12_20_MOD img_path = "http://www-bs2.informatik.uni-tuebingen.de/services/briese/";
-img_path = "images/";
-download_path = "downloads/";
-
-contact_email = "abi-multiloc2@informatik.uni-tuebingen.de";
-
 try:
+  sys.path.append('/MultiLoc2');
+
+  # Tag YLoc Webservice Instance
+  os.environ['MULTILOC2_WS'] = '1';
+
+  #os.environ['MULTILOC2_DEBUG'] = '1';
+  os.environ['MULTILOC2_JOBS'] = '/ml2jobs';
+
+  os.environ['MULTILOC2_MAX_SEQS'] = '20';
+
+  python_path = "/usr/bin/python";
+  img_path = "images/";
+  download_path = "downloads/";
+
+  from ml2config import *
+
   import cgitb;
   import random;
   import md5;
@@ -250,23 +241,17 @@ def __print_head():
   print "<TR><TH colspan=2 width=100% height=40pt>";
   print "<div id='navi'>"
 
-  class_list = ["","","",""];
+  class_list = ["",""];
 
   if not form.has_key("page"):
     class_list[0] = "class='current'";
   elif form["page"].value=="info":
     class_list[1] = "class='current'";
-  elif form["page"].value=="imprint":
-    class_list[2] = "class='current'";
-  elif form["page"].value=="gdpr":
-    class_list[3] = "class='current'";
   else:
     class_list[0] = "class='current'";
 
   print "<a "+class_list[0]+" href='webloc.cgi'>Predict with MultiLoc2</a>";
   print "<a "+class_list[1]+" href='webloc.cgi?page=info'>Information</a>";
-  print "<a "+class_list[2]+" href='webloc.cgi?page=imprint'>Impressum</a>";
-  print "<a "+class_list[3]+" href='webloc.cgi?page=gdpr'>Datenschutzerklaerung</a>";
   print "</div></TH></TR>"
   print "<TR><TH colspan=2 height=80% style='padding-left:30pt;'>";
 
@@ -275,8 +260,9 @@ def __print_foot():
   print "</TH></TR>";
   print "<TR><TH colspan=2 bgcolor=#FFFFFF>"
   print "<hr>";
-  print "<BR><p style='font-size:8pt;'>";
-  print "Contact: mail to <a style='font-size:8pt;' href=mailto:" + contact_email + ">MultiLoc2 Admin</a></p>";
+  print "<p>&nbsp;&nbsp;&nbsp;&nbsp;<a style='font-size:8pt;color:blue' href=mailto:" + contact_email + "?subject=MultiLoc2%20Webservice>Mail to MultiLoc2 Admin</a></p>";
+  print "<p>&nbsp;&nbsp;&nbsp;&nbsp;<a href=" + imprint_url + " style='font-size:8pt;color:blue' target='_blank'>Imprint (Impressum)</a></p>";
+  print "<p>&nbsp;&nbsp;&nbsp;&nbsp;<a href=" + gdpr_url + " style='font-size:8pt;color:blue' target='_blank'>GDPR Declaration (Datenschutzerklaerung)</a></p>";
   print "</TH></TR>"
   print "</TABLE>";
   print "</BODY></HTML>";
@@ -544,13 +530,9 @@ def __libsvm_version_info():
 
 def __interproscan_version_info():
   try:
-    if os.getenv("INTERPROSCAN"):
-      ips_path = os.path.join(os.getenv("INTERPROSCAN"), "interproscan.sh");
-      p = Popen(ips_path + " -version", shell=True, stdout=PIPE, stderr=PIPE);
-      stdout, stderr = p.communicate();
-
-      print "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + stdout.split("\n")[0].strip() + "</p>";
-      print "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + stdout.split("\n")[1].strip() + "</p>";
+    if ips_version != '':
+      print "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + ips_version + "</p>";
+      print "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + ips_build + "</p>";
     else:
       print "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cannot detect InterProScan version</p>";
   except:
@@ -565,12 +547,21 @@ def __print_info_page():
   __print_header();
   __print_head();
 
+  print "<h2>Terms of Service</h2>";
+  print "<p>&nbsp;&nbsp;&nbsp;&nbsp;<a href=" + imprint_url + " style='color:blue' target='_blank'>Imprint (Impressum)</a></p>";
+  print "<p>&nbsp;&nbsp;&nbsp;&nbsp;<a href=" + gdpr_url + " style='color:blue' target='_blank'>GDPR Declaration (Datenschutzerklaerung)</a></p>";
+  print "<BR><BR>";
+
+  print "<h2>Contact</h2>";
+  print "<p>&nbsp;&nbsp;&nbsp;&nbsp;Please write an eMail to  <a style='color:blue' href=mailto:" + contact_email + "?subject=MultiLoc2%20Webservice>MultiLoc2 Admin</a></p>";
+  print "<BR><BR>";
+
   print "<h2>How to Cite</h2>";
   print "<p>&nbsp;&nbsp;&nbsp;&nbsp;Blum, T.; Briesemeister, S. and Kohlbacher, O. (2009).</p>";
   print "<p>&nbsp;&nbsp;&nbsp;&nbsp;<a href='http://dx.doi.org/10.1186/1471-2105-10-274' style='color:blue' target='_blank'>MultiLoc2: integrating phylogeny and Gene Ontology terms improves subcellular protein localization prediction.</a></p>";
   print "<p>&nbsp;&nbsp;&nbsp;&nbsp;BMC Bioinformatics, 10:274</p><BR>";
-  print "&nbsp;&nbsp;&nbsp;&nbsp;Supplementary Material: <a href='" + download_path + "MultiLoc2_supplementary_material.pdf' style='color:blue' target='_blank'>MultiLoc2_supplementary_material.pdf</a>"
-  print "<BR><BR><BR>";
+  print "<p>&nbsp;&nbsp;&nbsp;&nbsp;Supplementary Material: <a href='" + download_path + "MultiLoc2_supplementary_material.pdf' style='color:blue' target='_blank'>MultiLoc2_supplementary_material.pdf</a></p>";
+  print "<BR><BR>";
 
   print "<h2>License</h2>";
   print "<p>&nbsp;&nbsp;&nbsp;&nbsp;MultiLoc2 is distributed under the GNU General Public License (GPL).</p>";
@@ -595,93 +586,16 @@ def __print_info_page():
   print "<BR><BR>";
 
   print "<h2>Data Sets</h2>";
-  print "<BR><BR><BR>";
+  print "<p>&nbsp;&nbsp;&nbsp;&nbsp;The data sets used for traning and testing the MultiLoc2 predictors are available here and from the <a href='http://gpcr.biocomp.unibo.it/bacello/' style='color:blue' target='_blank'>BaCelLo web sites</a>.</p>"
+  print "<p>&nbsp;&nbsp;&nbsp;&nbsp;Data set archive: <a href='" + download_path + "multiloc2_datasets.tar.bz2' style='color:blue' download>multiloc2_datasets.tar.bz2</a></p>"
+  print "<BR><BR>";
 
   __print_foot();
 
 
-def __print_imprint_page():
-  __print_header();
-  __print_head();
-
-  print "<h2>Impressum / Imprint</h2>";
-  print '''<h3>Allgemeine Informationen gem. &sect; 5 TMG, &sect; 55 RStVG</h3>
-  <table>
-  <tbody>
-  <tr>
-  <td>Adresse</td>
-  <td>
-  <p>Eberhard Karls Universit&auml;t T&uuml;bingen</p>
-  <p>Geschwister-Scholl-Platz</p>
-  <p>72074 T&uuml;bingen</p>
-  </td>
-  </tr>
-  <tr>
-  <td><br /></td>
-  <td>Die Universit&auml;t T&uuml;bingen ist eine K&ouml;rperschaft des &ouml;ffentlichen Rechts. Sie wird durch den Rektor Prof. Dr. Bernd Engler (eMail: bernd. engler [at] uni-tuebingen.de) gesetzlich vertreten</td>
-  </tr>
-  <tr>
-  <td>Telefonzentrale</td>
-  <td>+49 (0) 70 71/29-0</td>
-  </tr>
-  <tr>
-  <td>Fax Zentrale Verwaltung</td>
-  <td>+49 (0) 70 71/29-59 90</td>
-  </tr>
-  <tr>
-  <td>Internet-Adresse</td>
-  <td><a href="https://www.uni-tuebingen.de/">https://www.uni-tuebingen.de</a></td>
-  </tr>
-  <tr>
-  <td>Umsatzsteuer-Identifikationsnummer</td>
-  <td>
-  <p>gem&auml;&szlig; &sect; 27a Umsatzsteuergesetz:&nbsp;<strong>DE812383453</strong></p>
-  </td>
-  </tr>
-  <tr>
-  <td>Aufsichtsbeh&ouml;rde</td>
-  <td>Ministerium f&uuml;r Wissenschaft, Forschung und Kunst Baden-W&uuml;rttemberg</td>
-  </tr>
-  </tbody>
-  </table>
-
-  <h3>1. Externe Links</h3>
-  <p>Diese Webseite der Universit&auml;t T&uuml;bingen enth&auml;lt auch entsprechend gekennzeichnete Links oder Verweise auf Websites Dritter. Durch den Link vermittelt die Universit&auml;t T&uuml;bingen lediglich den Zugang zur Nutzung dieser Inhalte. Eine Zustimmung zu den Inhalten den verlinkten Seiten Dritter ist damit nicht verbunden. Die Universit&auml;t T&uuml;bingen &uuml;bernimmt daher keine Verantwortung f&uuml;r die Verf&uuml;gbarkeit oder den Inhalt solcher Websites und keine Haftung f&uuml;r Sch&auml;den oder Verletzungen, die aus der Nutzung, gleich welcher Art, solcher Inhalte entstehen. Hierf&uuml;r haftet allein der Anbieter der jeweiligen Seite.&nbsp;&nbsp;</p>
-
-  <p>Bei der erstmaligen Verkn&uuml;pfung mit einem anderen
-  Internetangebot hat die Redaktion dessen Inhalt daraufhin &uuml;berpr&uuml;ft, ob
-  durch ihn eine m&ouml;gliche zivilrechtliche oder strafrechtliche
-  Verantwortlichkeit ausgel&ouml;st wird. Dort nachtr&auml;glich eingebundene
-  Inhalte k&ouml;nnen jedoch leider nicht &uuml;berpr&uuml;ft werden. Der Verweis auf
-  dieses Angebot wird unverz&uuml;glich aufgehoben werden, sobald die Redaktion feststellt oder von anderen darauf hingewiesen wird, dass ein
-  bestimmtes Angebot, zu dem ein Link bereitgestellt wurde, eine zivil-
-  oder strafrechtliche Verantwortlichkeit ausl&ouml;st.</p>
-
-  <h3>2.&nbsp;Urheberrecht</h3>
-  <p>Copyright (c), Universitaet T&uuml;bingen. Alle Rechte vorbehalten.</p>
-  <p>Alle auf dieser Website ver&ouml;ffentlichten Inhalte (Layout, Texte, Bilder, Grafiken, Video- und Tondateien usw.) unterliegen dem Urheberrecht. Jede vom Urheberrechtsgesetz nicht zugelassene Verwertung bedarf vorheriger ausdr&uuml;cklicher Zustimmung der Universit&auml;t T&uuml;bingen. Dies gilt insbesondere f&uuml;r Vervielf&auml;ltigung, Bearbeitung, &uuml;bersetzung, Einspeicherung, Verarbeitung bzw. Wiedergabe von Inhalten in Datenbanken oder anderen elektronischen Medien und Systemen. Fotokopien und Downloads von Web-Seiten f&uuml;r den privaten, wissenschaftlichen und nicht kommerziellen Gebrauch d&uuml;rfen hergestellt werden.</p>
-  <p>Das Urheberrecht f&uuml;r die Wort-Bild-Marke liegt ausdr&uuml;cklich bei der Universit&auml;t T&uuml;bingen.</p>
-  <p>Wir erlauben ausdr&uuml;cklich und begr&uuml;&szlig;en das Zitieren unserer Dokumente und Webseiten sowie das Setzen von Links auf unsere Website.</p>
-
-  <h3>3.&nbsp;Haftungsausschluss</h3>
-  <p>Die Informationen auf dieser Website wurden nach bestem Wissen und Gewissen sorgf&auml;ltig zusammengestellt und gepr&uuml;ft. Es wird jedoch keine Gew&auml;hr, weder ausdr&uuml;cklich noch stillschweigend, f&uuml;r die Vollst&auml;ndigkeit, Richtigkeit oder Aktualit&auml;t sowie die jederzeitige Verf&uuml;gbarkeit der bereit gestellten Informationen &uuml;bernommen. Eine Haftung f&uuml;r Sch&auml;den, die aus der Nutzung oder Nichtnutzung der auf dieser Website angebotenen Informationen entstehen ist, soweit gesetzlich zul&auml;ssig, ausgeschlossen.</p>
-
-  <h3>Ansprechpartner</h3>
-  <p>Prof. Dr. Oliver Kohlbacher<br />Sand 14<br />72076 T&uuml;bingen<br />Telefon: +49-7071-29-70458<br />Fax: +49-7071-29-5152<br />eMail: oliver. kohlbacher [at] uni-tuebingen.de</p>
-  ''';
-
-  __print_foot();
-
-def __print_gdpr_page():
-  __print_header();
-  __print_head();
-
-  print "<h2>Datenschutzerklaerung / GDPR Disclaimer</h2>";
-
-  __print_foot();
-
-
-# ### Main ###
+#----------------------------------------------------------------------
+# Main
+#----------------------------------------------------------------------
 
 form=cgi.FieldStorage()
 
@@ -695,10 +609,6 @@ try:
       __print_prediction_page();
     elif form["page"].value == "info":
       __print_info_page();
-    elif form["page"].value == "imprint":
-      __print_imprint_page();
-    elif form["page"].value == "gdpr":
-      __print_gdpr_page();
     else:
       __print_start_screen("Unkown value of parameter 'page'. You have been redirected to the start page.");
 except:
