@@ -16,7 +16,7 @@ else:
 if os.environ.get("ML_GDPR_URL") != None:
     f.write("gdpr_url = '" + os.environ.get("ML_GDPR_URL") + "'\n")
 else:
-    f.write("gdpr_url = 'https://abi.inf.uni-tuebingen.de/impressum'\n")
+    f.write("gdpr_url = 'https://abi.inf.uni-tuebingen.de/datenschutzerklaerung'\n")
 
 if os.path.isfile("/interproscan/interproscan.sh"):
     p = Popen("/interproscan/interproscan.sh -version", shell=True, stdout=PIPE, stderr=PIPE);
