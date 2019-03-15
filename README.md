@@ -4,8 +4,9 @@
 Travis CI  
 [![Build Status](https://travis-ci.org/KohlbacherLab/MultiLoc2.svg?branch=master)](https://travis-ci.org/KohlbacherLab/MultiLoc2)  
 
-This repository mainly provides a containerized installation of MultiLoc2 as a webservice
-Just build the image and start the container using the script [start_container.sh](MultiLoc2/start_container.sh)
+This repository mainly provides a containerized installation of MultiLoc2 as a webservice.  
+Just build the image and start the container using the script [start_container.sh](MultiLoc2/start_container.sh).  
+Have a look into that script to learn how everything works and to make some changes.
 
 
 **Citing & Further Information**  
