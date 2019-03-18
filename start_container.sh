@@ -25,6 +25,13 @@ else
   gdpr_url="$ABI_SERVICES_GDPR_URL"
 fi
 
+if [ -z "$ABI_SERVICES_MULTILOC2_MAX_SEQ" ]
+then
+  multiloc2_max_seq="20"
+else
+  multiloc2_max_seq="$ABI_SERVICES_MULTILOC2_MAX_SEQ"
+fi
+
 if [ -z "$ABI_SERVICES_MULTILOC2_PORT" ]
 then
   multiloc2_port="28020"
@@ -44,6 +51,7 @@ docker run --rm -it -d -p $multiloc2_port:80 \
            -e ML_CONTACT_EMAIL="$contact_email" \
            -e ML_IMPRINT_URL="$imprint_url" \
            -e ML_GDPR_URL="$gdpr_url" \
+           -e ML_MAX_SEQ="$multiloc2_max_seq" \
            -e INTERPROSCAN="/interproscan" \
            -v /local/abi_webservices/interproscan-5.29-68.0:/interproscan \
            --name abi_webservice_multiloc2 multiloc2
