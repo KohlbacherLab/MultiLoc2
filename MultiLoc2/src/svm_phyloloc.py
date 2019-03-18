@@ -112,11 +112,12 @@ def createProfile(fastafile, blast_path, genome_path, sessionid=1):
 		bit_score = 0.0
 
 		if len(blastLines) >= 6:
-			hit_line = blastLines[5]
+			hit_line = blastLines[5].split("\t")
 			evalue = hit_line[10]
+			bit_score_raw = hit_line[11]
 
 			if id in protein_self_bit_score_map:
-				bit_score = float(hit_line[11]) / protein_self_bit_score_map[id]
+				bit_score = float(bit_score_raw) / protein_self_bit_score_map[id]
 			if evalue != "0.0":
 				for cutoff in phylovalue.keys():
 					if float(evalue) >= cutoff:
@@ -173,7 +174,7 @@ def createProfile(fastafile, blast_path, genome_path, sessionid=1):
 
 				proteins2[id][i]=bit_score
 		'''
-		
+
 		blastFile.close()
 
 
