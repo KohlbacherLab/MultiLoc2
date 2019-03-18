@@ -52,6 +52,7 @@ COPY webservice/images/      /var/www/html/cgi-bin/images/
 COPY MultiLoc2/data/multiloc2_datasets.tar.bz2 /var/www/html/cgi-bin/downloads/multiloc2_datasets.tar.bz2
 
 RUN mkdir /webservice
+ADD webservice/job_cleanup.sh          /webservice/job_cleanup.sh
 ADD webservice/ml2setup.py  /webservice/ml2setup.py
 ADD webservice/multiloc2_entrypoint.sh  /webservice/multiloc2_entrypoint.sh
 
