@@ -46,14 +46,14 @@ RUN a2enmod cgid
 ADD webservice/apache2.conf         /etc/apache2/apache2.conf
 ADD webservice/serve-cgi-bin.conf   /etc/apache2/conf-available/serve-cgi-bin.conf
 
-COPY webservice/webloc.cgi   /var/www/html/cgi-bin/
-COPY webservice/downloads/   /var/www/html/cgi-bin/downloads/
-COPY webservice/images/      /var/www/html/cgi-bin/images/
+COPY webservice/webloc.cgi                     /var/www/html/cgi-bin/
+COPY webservice/downloads/                     /var/www/html/cgi-bin/downloads/
+COPY webservice/images/                        /var/www/html/cgi-bin/images/
 COPY MultiLoc2/data/multiloc2_datasets.tar.bz2 /var/www/html/cgi-bin/downloads/multiloc2_datasets.tar.bz2
 
 RUN mkdir /webservice
-ADD webservice/job_cleanup.sh          /webservice/job_cleanup.sh
-ADD webservice/ml2setup.py  /webservice/ml2setup.py
+ADD webservice/job_cleanup.sh           /webservice/job_cleanup.sh
+ADD webservice/ml2setup.py              /webservice/ml2setup.py
 ADD webservice/multiloc2_entrypoint.sh  /webservice/multiloc2_entrypoint.sh
 
 RUN mkdir /ml2jobs
@@ -65,10 +65,6 @@ RUN chmod 777 /ml2jobs
 COPY MultiLoc2 /MultiLoc2
 WORKDIR /MultiLoc2
 RUN python configureML2.py
-RUN chmod +x run_multiloc2.sh
-
-# Generate the reusable BLAST databases!
-#RUN ./run_multiloc2.sh test.fasta animal test.res
 
 WORKDIR /
 RUN  chown -R www-data:www-data /MultiLoc2

@@ -375,14 +375,21 @@ def __start_ml2_prediction(id, origin, predictor):
     in_f       = __job_file_path(id + "__input.fasta")
     out_f      = __job_file_path(id + "__result")
     ips_f      = __job_file_path(id + "__ips.out")
+    run_f      = __job_file_path(id + "__run.sh")
 
-    command = "/MultiLoc2/run_multiloc2_ws.sh " + in_f + " " + origin + " " + predictor + " " + out_f + " " + ips_f + " " + job_status_file + " " + __job_dir() + " > " + job_log_file + " & "
+    tmp = open(run_f, "w")
+    tmp.write("#!/bin/bash\n\n")
 
-    tmp = open(__job_file_path(id + "__ml2_call"), "w")
-    tmp.write(command)
+    if len(ips_version) > 0:
+      tmp.write("/interproscan/interproscan.sh -i " + in_f + " -o " + ips_f + " -format TSV -goterms -iprlookup --tempdir " + __job_dir() + "\n")
+      tmp.write("python /MultiLoc2/src/multiloc2_prediction.py -fasta=" + in_f + " -result=" + out_f + " -origin=" + origin + " -predictor=" + predictor + " -go=" + ips_f + "\n")
+    else:
+      tmp.write("python /MultiLoc2/src/multiloc2_prediction.py -fasta=" + in_f + " -result=" + out_f + " -origin=" + origin + " -predictor=" + predictor + "\n")
+
+    tmp.write('echo "Done" > ' + job_status_file + "\n")
     tmp.close()
 
-    os.system(command)
+    os.system("sh " + run_f + " > " + job_log_file + " &")
   except:
     print "\n\n<PRE>"
     traceback.print_exc()

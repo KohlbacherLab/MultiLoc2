@@ -44,14 +44,12 @@ fi
 # Start MultiLoc2 Daemon Container
 #----------------------------------
 
-# Without an InterProScan installation remove the volume mount flag and
-# the flag for the INTERPROSCAN environment variable
+# Without an InterProScan installation remove the volume mount flag
 
 docker run --rm -it -d -p $multiloc2_port:80 \
            -e ML_CONTACT_EMAIL="$contact_email" \
            -e ML_IMPRINT_URL="$imprint_url" \
            -e ML_GDPR_URL="$gdpr_url" \
            -e ML_MAX_SEQ="$multiloc2_max_seq" \
-           -e INTERPROSCAN="/interproscan" \
            -v /local/abi_webservices/interproscan-5.29-68.0:/interproscan \
            --name abi_webservice_multiloc2 multiloc2
