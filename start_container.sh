@@ -44,17 +44,24 @@ else
   multiloc2_port="$ABI_SERVICES_MULTILOC2_PORT"
 fi
 
-
 #----------------------------------
 # Start MultiLoc2 Daemon Container
 #----------------------------------
 
-# Without an InterProScan installation remove the volume mount flag
-
-docker run --rm -it -d -p $multiloc2_port:80 \
-           -e ML_CONTACT_EMAIL="$contact_email" \
-           -e ML_IMPRINT_URL="$imprint_url" \
-           -e ML_GDPR_URL="$gdpr_url" \
-           -e ML_MAX_SEQ="$multiloc2_max_seq" \
-           -v /local/abi_webservices/interproscan-5.29-68.0:/interproscan \
-           --name abi_webservice_multiloc2 multiloc2
+if [ -z "$INTERPROSCAN_LOCAL" ]
+then
+  docker run --rm -it -d -p $multiloc2_port:80 \
+             -e ML_CONTACT_EMAIL="$contact_email" \
+             -e ML_IMPRINT_URL="$imprint_url" \
+             -e ML_GDPR_URL="$gdpr_url" \
+             -e ML_MAX_SEQ="$multiloc2_max_seq" \
+             --name abi_webservice_multiloc2 multiloc2
+else
+  docker run --rm -it -d -p $multiloc2_port:80 \
+             -e ML_CONTACT_EMAIL="$contact_email" \
+             -e ML_IMPRINT_URL="$imprint_url" \
+             -e ML_GDPR_URL="$gdpr_url" \
+             -e ML_MAX_SEQ="$multiloc2_max_seq" \
+             -v $INTERPROSCAN_LOCAL:/interproscan \
+             --name abi_webservice_multiloc2 multiloc2
+fi
